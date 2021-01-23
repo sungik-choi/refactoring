@@ -1,8 +1,11 @@
-import { Invoice, Plays, Performance, Play } from "./types";
+import { Invoice, Plays, Performance } from "./types";
 import invoicesData from "./data/invoices";
 import playsData from "./data/plays";
 
 function statement(invoice: Invoice, plays: Plays) {
+  return renderPlainText(invoice, plays);
+}
+function renderPlainText(invoice: Invoice, plays: Plays) {
   let result = `청구 내역 (고객명: ${invoice.customer})\n`;
 
   for (let perf of invoice.performances) {
