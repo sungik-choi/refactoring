@@ -1,4 +1,14 @@
-import { Invoice, Plays, Performance, StatementData, PerformanceStatement } from "./types"
+import { Invoice, Plays, Performance, StatementData, PerformanceStatement, Play } from "./types";
+
+class PerformanceCalculator {
+  performance: Performance;
+  play: Play;
+
+  constructor(aPerformance: Performance, aPlay: Play) {
+    this.performance = aPerformance;
+    this.play = aPlay;
+  }
+}
 
 function createStatementData(invoice: Invoice, plays: Plays) {
   const statementData = <StatementData>{};
@@ -9,8 +19,9 @@ function createStatementData(invoice: Invoice, plays: Plays) {
   return statementData;
 
   function enrichPerformance(aPerformance: Performance) {
+    const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance));
     const result = <PerformanceStatement>Object.assign({}, aPerformance);
-    result.play = playFor(result);
+    result.play = calculator.play;
     result.amount = amountFor(result);
     result.volumeCredits = volumeCreditsFor(result);
     return result;
@@ -58,4 +69,4 @@ function createStatementData(invoice: Invoice, plays: Plays) {
   }
 }
 
-export default createStatementData
+export default createStatementData;
