@@ -8,6 +8,7 @@ interface PerformanceStatement extends Performance {
   amount: number;
   volumeCredits: number;
 }
+
 interface StatementData extends Invoice {
   performances: PerformanceStatement[];
   totalAmount: number;
@@ -24,7 +25,6 @@ function createStatementData(invoice: Invoice, plays: Plays) {
   statementData.performances = invoice.performances.map(enrichPerformance);
   statementData.totalAmount = totalAmount(statementData);
   statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-  
   return statementData;
 
   function enrichPerformance(aPerformance: Performance) {
