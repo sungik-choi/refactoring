@@ -1,32 +1,35 @@
-import { Invoice, Plays, Performance } from './types';
+import { Invoice, Play, Plays, Performance } from "./types";
 import invoicesData from "./data/invoices";
 import playsData from "./data/plays";
 
+interface PerformanceStatement extends Performance {
+  play: Play;
+  amount: number;
+}
+interface StatementData extends Invoice {
+  performances: PerformanceStatement[];
+}
+
 function statement(invoice: Invoice, plays: Plays) {
-  const statementData = <Invoice>{};
+  const statementData = <StatementData>{};
   statementData.customer = invoice.customer;
   statementData.performances = invoice.performances.map(enrichPerformance);
-  return renderPlainText(statementData, plays);
+  return renderPlainText(statementData);
 
   function enrichPerformance(aPerformance: Performance) {
-    const result = Object.assign({}, aPerformance);
+    const result = <PerformanceStatement>Object.assign({}, aPerformance);
+    result.play = playFor(result);
+    result.amount = amountFor(result);
     return result;
   }
-}
-function renderPlainText(data: Invoice, plays: Plays) {
-  let result = `청구 내역 (고객명: ${data.customer})\n`;
 
-  for (let perf of data.performances) {
-    result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
+  function playFor(aPerformance: Performance) {
+    return plays[aPerformance.playID];
   }
 
-  result += `총액: ${usd(totalAmount())}\n`;
-  result += `적립 포인트: ${totalVolumeCredits()}점\n`;
-  return result;
-
-  function amountFor(aPerformance: Performance) {
+  function amountFor(aPerformance: PerformanceStatement) {
     let result = 0;
-    switch (playFor(aPerformance).type) {
+    switch (aPerformance.play.type) {
       case "tragedy":
         result = 40000;
         if (aPerformance.audience > 30) {
@@ -41,19 +44,27 @@ function renderPlainText(data: Invoice, plays: Plays) {
         result += 300 * aPerformance.audience;
         break;
       default:
-        throw new Error(`알 수 없는 장르: ${playFor(aPerformance).type}`);
+        throw new Error(`알 수 없는 장르: ${aPerformance.play.type}`);
     }
     return result;
   }
+}
 
-  function playFor(aPerformance: Performance) {
-    return plays[aPerformance.playID];
+function renderPlainText(data: StatementData) {
+  let result = `청구 내역 (고객명: ${data.customer})\n`;
+
+  for (let perf of data.performances) {
+    result += `${perf.play.name}: ${usd(perf.amount)} (${perf.audience}석)\n`;
   }
 
-  function volumeCreditsFor(aPerformance: Performance) {
+  result += `총액: ${usd(totalAmount())}\n`;
+  result += `적립 포인트: ${totalVolumeCredits()}점\n`;
+  return result;
+
+  function volumeCreditsFor(aPerformance: PerformanceStatement) {
     let result = 0;
     result += Math.max(aPerformance.audience - 30, 0);
-    if ("comedy" === playFor(aPerformance).type) result += Math.floor(aPerformance.audience / 5);
+    if ("comedy" === aPerformance.play.type) result += Math.floor(aPerformance.audience / 5);
     return result;
   }
 
@@ -76,7 +87,7 @@ function renderPlainText(data: Invoice, plays: Plays) {
   function totalAmount() {
     let result = 0;
     for (let perf of data.performances) {
-      result += amountFor(perf);
+      result += perf.amount;
     }
     return result;
   }
