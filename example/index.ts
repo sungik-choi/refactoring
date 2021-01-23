@@ -1,8 +1,8 @@
-import { Invoice, Plays, Performances, Play } from './types';
-import invoicesData from "./data/invoices";
-import playsData from "./data/plays";
+import { Invoice, Plays, Performance, Play } from "./types";
+import invoices from "./data/invoices";
+import plays from "./data/plays";
 
-function amountFor(aPerformance: Performances, play: Play) {
+function amountFor(aPerformance: Performance, play: Play) {
   let result = 0;
   switch (play.type) {
     case "tragedy":
@@ -24,6 +24,10 @@ function amountFor(aPerformance: Performances, play: Play) {
   return result;
 }
 
+function playFor(aPerformance: Performance) {
+  return plays[aPerformance.playID];
+}
+
 function statement(invoice: Invoice, plays: Plays) {
   let totalAmount = 0;
   let volumeCredits = 0;
@@ -35,7 +39,7 @@ function statement(invoice: Invoice, plays: Plays) {
   }).format;
 
   for (let perf of invoice.performances) {
-    const play = plays[perf.playID];
+    const play = playFor(perf);
     let thisAmount = amountFor(perf, play);
 
     volumeCredits += Math.max(perf.audience - 30, 0);
@@ -51,8 +55,8 @@ function statement(invoice: Invoice, plays: Plays) {
 }
 
 function main() {
-  invoicesData.forEach((invoiceData) => {
-    const result = statement(invoiceData, playsData);
+  invoices.forEach((invoice) => {
+    const result = statement(invoice, plays);
     console.log(result);
   });
 }

@@ -1,6 +1,6 @@
 export type PlayType = "hamlet" | "as-like" | "othello"
 
-export type Performances = {
+export type Performance = {
   playID: PlayType
   audience: number
 }
@@ -16,5 +16,5 @@ export type Plays = {
 
 export interface Invoice {
   customer: string,
-  performances: Performances[]
+  performances: Performance[]
 }
