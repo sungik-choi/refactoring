@@ -1,0 +1,25 @@
+{
+  "name": "refactoring",
+  "version": "1.0.0",
+  "description": "리팩터링 2판 읽고 정리하기",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sungik-choi/refactoring.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sungik-choi/refactoring/issues"
+  },
+  "homepage": "https://github.com/sungik-choi/refactoring#readme",
+  "dependencies": {
+    "@types/node": "^14.14.22"
+  }
+}
