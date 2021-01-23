@@ -15,12 +15,17 @@ interface StatementData extends Invoice {
 }
 
 function statement(invoice: Invoice, plays: Plays) {
+  return renderPlainText(createStatementData(invoice, plays));
+}
+
+function createStatementData(invoice: Invoice, plays: Plays) {
   const statementData = <StatementData>{};
   statementData.customer = invoice.customer;
   statementData.performances = invoice.performances.map(enrichPerformance);
   statementData.totalAmount = totalAmount(statementData);
   statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-  return renderPlainText(statementData);
+  
+  return statementData;
 
   function enrichPerformance(aPerformance: Performance) {
     const result = <PerformanceStatement>Object.assign({}, aPerformance);
