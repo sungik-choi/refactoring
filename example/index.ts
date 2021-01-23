@@ -5,6 +5,7 @@ import playsData from "./data/plays";
 interface PerformanceStatement extends Performance {
   play: Play;
   amount: number;
+  volumeCredits: number;
 }
 interface StatementData extends Invoice {
   performances: PerformanceStatement[];
@@ -20,6 +21,7 @@ function statement(invoice: Invoice, plays: Plays) {
     const result = <PerformanceStatement>Object.assign({}, aPerformance);
     result.play = playFor(result);
     result.amount = amountFor(result);
+    result.volumeCredits = volumeCreditsFor(result);
     return result;
   }
 
@@ -48,6 +50,13 @@ function statement(invoice: Invoice, plays: Plays) {
     }
     return result;
   }
+
+  function volumeCreditsFor(aPerformance: PerformanceStatement) {
+    let result = 0;
+    result += Math.max(aPerformance.audience - 30, 0);
+    if ("comedy" === aPerformance.play.type) result += Math.floor(aPerformance.audience / 5);
+    return result;
+  }
 }
 
 function renderPlainText(data: StatementData) {
@@ -61,13 +70,6 @@ function renderPlainText(data: StatementData) {
   result += `적립 포인트: ${totalVolumeCredits()}점\n`;
   return result;
 
-  function volumeCreditsFor(aPerformance: PerformanceStatement) {
-    let result = 0;
-    result += Math.max(aPerformance.audience - 30, 0);
-    if ("comedy" === aPerformance.play.type) result += Math.floor(aPerformance.audience / 5);
-    return result;
-  }
-
   function usd(aNumber: number) {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -79,7 +81,7 @@ function renderPlainText(data: StatementData) {
   function totalVolumeCredits() {
     let result = 0;
     for (let perf of data.performances) {
-      result += volumeCreditsFor(perf);
+      result += perf.volumeCredits;
     }
     return result;
   }
