@@ -1,11 +1,11 @@
-type PlayType = "hamlet" | "as-like" | "othello"
+export type PlayType = "hamlet" | "as-like" | "othello"
 
-type Performances = {
+export type Performances = {
   playID: PlayType
   audience: number
 }
 
-interface Play {
+export interface Play {
   name: string
   type: "tragedy" | "comedy"
 }
