@@ -5,8 +5,13 @@ import playsData from "./data/plays";
 function statement(invoice: Invoice, plays: Plays) {
   const statementData = <Invoice>{};
   statementData.customer = invoice.customer;
-  statementData.performances = invoice.performances;
+  statementData.performances = invoice.performances.map(enrichPerformance);
   return renderPlainText(statementData, plays);
+
+  function enrichPerformance(aPerformance: Performance) {
+    const result = Object.assign({}, aPerformance);
+    return result;
+  }
 }
 function renderPlainText(data: Invoice, plays: Plays) {
   let result = `청구 내역 (고객명: ${data.customer})\n`;
