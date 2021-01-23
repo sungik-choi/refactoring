@@ -39,6 +39,21 @@ class PerformanceCalculator {
   }
 }
 
+class TragedyCalculator extends PerformanceCalculator {}
+
+class ComedyCalculator extends PerformanceCalculator {}
+
+function createPerformanceCalculator(aPerformance: Performance, aPlay: Play) {
+  switch (aPlay.type) {
+    case "tragedy":
+      return new TragedyCalculator(aPerformance, aPlay);
+    case "comedy":
+      return new ComedyCalculator(aPerformance, aPlay);
+    default:
+      throw new Error(`알 수 없는 장르: ${this.play.type}`);
+  }
+}
+
 function createStatementData(invoice: Invoice, plays: Plays) {
   const statementData = <StatementData>{};
   statementData.customer = invoice.customer;
@@ -48,7 +63,7 @@ function createStatementData(invoice: Invoice, plays: Plays) {
   return statementData;
 
   function enrichPerformance(aPerformance: Performance) {
-    const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance));
+    const calculator = createPerformanceCalculator(aPerformance, playFor(aPerformance));
     const result = <PerformanceStatement>Object.assign({}, aPerformance);
     result.play = calculator.play;
     result.amount = calculator.amount;
