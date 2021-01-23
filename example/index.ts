@@ -2,9 +2,9 @@ import { Invoice, Plays, Performance, Play } from "./types";
 import invoices from "./data/invoices";
 import plays from "./data/plays";
 
-function amountFor(aPerformance: Performance, play: Play) {
+function amountFor(aPerformance: Performance) {
   let result = 0;
-  switch (play.type) {
+  switch (playFor(aPerformance).type) {
     case "tragedy":
       result = 40000;
       if (aPerformance.audience > 30) {
@@ -19,7 +19,7 @@ function amountFor(aPerformance: Performance, play: Play) {
       result += 300 * aPerformance.audience;
       break;
     default:
-      throw new Error(`알 수 없는 장르: ${play.type}`);
+      throw new Error(`알 수 없는 장르: ${playFor(aPerformance).type}`);
   }
   return result;
 }
@@ -39,14 +39,13 @@ function statement(invoice: Invoice, plays: Plays) {
   }).format;
 
   for (let perf of invoice.performances) {
-    const play = playFor(perf);
-    let thisAmount = amountFor(perf, play);
+    let thisAmount = amountFor(perf);
 
     volumeCredits += Math.max(perf.audience - 30, 0);
 
-    if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
+    if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
 
-    result += `${play.name}: ${format(thisAmount / 100)} (${perf.audience}석)\n`;
+    result += `${playFor(perf).name}: ${format(thisAmount / 100)} (${perf.audience}석)\n`;
     totalAmount += thisAmount;
   }
   result += `총액: ${format(totalAmount / 100)}\n`;
