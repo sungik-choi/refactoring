@@ -4,7 +4,7 @@ import playsData from "./data/plays";
 
 function statement(invoice: Invoice, plays: Plays) {
   let result = `청구 내역 (고객명: ${invoice.customer})\n`;
-  
+
   for (let perf of invoice.performances) {
     result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
   }
