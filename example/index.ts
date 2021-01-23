@@ -3,9 +3,10 @@ import invoicesData from "./data/invoices";
 import playsData from "./data/plays";
 
 function statement(invoice: Invoice, plays: Plays) {
-  return renderPlainText(invoice, plays);
+  const statementData = {};
+  return renderPlainText(statementData, invoice, plays);
 }
-function renderPlainText(invoice: Invoice, plays: Plays) {
+function renderPlainText(data, invoice: Invoice, plays: Plays) {
   let result = `청구 내역 (고객명: ${invoice.customer})\n`;
 
   for (let perf of invoice.performances) {
